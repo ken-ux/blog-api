@@ -10,6 +10,12 @@ const comment_controller = require("../controllers/commentController");
 
 // POST ROUTES
 
+/* GET login status */
+router.get("/login", post_controller.login_get);
+
+/* POST to login */
+router.post("/login", post_controller.login_post);
+
 /* GET specific post */
 router.get("/posts/:postid", post_controller.post_get);
 
