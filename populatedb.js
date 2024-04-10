@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+const bcrypt = require("bcryptjs");
 
 console.log(
   'This script populates a test user, posts, and to the database. Specified database as argument - e.g.: node populatedb "mongodb+srv://cooluser:coolpassword@cluster0.lz91hw2.mongodb.net/?retryWrites=true&w=majority"'
@@ -42,7 +43,14 @@ async function userCreate(index, display_name, username, password) {
     password: password,
   });
 
-  await user.save();
+  bcrypt.hash(password, 10, async (err, hashedPassword) => {
+    if (err) {
+      throw new Error("Error saving password. Please try again.");
+    }
+    user.password = hashedPassword;
+    await user.save();
+  });
+
   users[index] = user;
   console.log(`Add user: ${display_name}`);
 }
@@ -75,7 +83,9 @@ async function commentCreate(index, post, username, text, timestamp) {
 
 async function createUsers() {
   console.log("Adding users");
-  await Promise.all([userCreate(0, "John Doe", "test_user", "test_password")]);
+  await Promise.all([
+    userCreate(0, "John Doe", "test_user", process.env.USER_CREATION_PW),
+  ]);
 }
 
 async function createPosts() {
