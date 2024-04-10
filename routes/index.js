@@ -3,17 +3,21 @@ var router = express.Router();
 const post_controller = require("../controllers/postController");
 const comment_controller = require("../controllers/commentController");
 
-/* GET home page. */
-// router.get("/", function (req, res, next) {
-//   res.render("index", { title: "Express" });
-// });
-
 // POST ROUTES
 
 /* GET login status */
+// Example of how to send along a cookie created through cURL with the get request:
+// curl -b cookies.txt http://localhost:3000/login
 router.get("/login", post_controller.login_get);
 
 /* POST to login */
+// Example of how to send a POST request to login through the command line:
+// curl --cookie-jar cookies.txt \
+//      -H "Content-type: application/x-www-form-urlencoded" \
+//      -d "username=USERNAME_GOES_HERE" \
+//      -d "password=PASSWORD_GOES_HERE" \
+//      -X POST \
+//      http://localhost:3000/login
 router.post("/login", post_controller.login_post);
 
 /* GET specific post */

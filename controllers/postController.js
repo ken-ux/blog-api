@@ -1,14 +1,64 @@
 const Post = require("../models/post");
 const User = require("../models/user");
+const { check, body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
+const passport = require("passport");
 
 exports.login_get = (req, res, next) => {
-  res.json("NOT IMPLEMENTED: Login POST.");
+  if (req.user) {
+    res.send("You are logged in.");
+  } else {
+    res.send("You are not logged in.");
+  }
 };
 
-exports.login_post = (req, res, next) => {
-  res.json("NOT IMPLEMENTED: Login POST.");
-};
+exports.login_post = [
+  // Validate and sanitize fields.
+  body("username").trim().escape(),
+  check("username").custom(async (value) => {
+    const usernameExists = await User.findOne({ username: value }).exec();
+    if (usernameExists === null) {
+      throw new Error(
+        "User does not exist. Please check username and try again."
+      );
+    }
+  }),
+  body("password").trim().escape(),
+
+  // Process request after validation and sanitization.
+  (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitized values/error messages.
+      return res.send(errors.array());
+    }
+    // Validation is successful, call next() to go on with passport authentication.
+    next();
+  },
+
+  // Authenticate user
+  (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+      // If user isn't authenticated, rerender page with error message.
+      if (!user) {
+        return res.send(info.message);
+      }
+      // User is authenticated, log them into the session.
+      req.login(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+        // Send message if there are no login issues.
+        return res.send("User logged in.");
+      });
+    })(req, res, next);
+  },
+];
 
 exports.post_get = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.postid).exec();
