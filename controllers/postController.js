@@ -7,7 +7,7 @@ const passport = require("passport");
 
 exports.login_get = (req, res, next) => {
   if (req.user) {
-    res.send("You are logged in.");
+    res.send(`You are logged in as ${req.user.display_name}.`);
   } else {
     res.send("You are not logged in.");
   }
@@ -73,9 +73,19 @@ exports.post_get = asyncHandler(async (req, res, next) => {
 });
 
 // TO-DO
-exports.post_put = (req, res, next) => {
-  res.json("NOT IMPLEMENTED: Post PUT");
-};
+exports.post_put = asyncHandler(async (req, res, next) => {
+  const possibleFields = ["title", "text", "published"];
+  let update = {};
+
+  for (let i = 0; i < possibleFields.length; i++) {
+    if (req.body[possibleFields[i]] !== undefined) {
+      update[possibleFields[i]] = req.body[possibleFields[i]];
+    }
+  }
+
+  await Post.findByIdAndUpdate(req.params.postid, update);
+  res.send("Post updated.");
+});
 
 exports.post_delete = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.postid).exec();

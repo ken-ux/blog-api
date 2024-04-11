@@ -24,6 +24,12 @@ router.post("/login", post_controller.login_post);
 router.get("/posts/:postid", post_controller.post_get);
 
 /* PUT updates for specific post */
+// Example of how to send this PUT request with the cookie generated through cURL:
+// curl -b cookies.txt \
+//      -H 'Content-Type: application/json' \
+//      -d '{ "title":"I updated my blog post.", "published": true }' \
+//      -X PUT \
+//      http://localhost:3000/posts/:postid
 router.put("/posts/:postid", post_controller.post_put);
 
 /* DELETE specific post */
@@ -36,7 +42,7 @@ router.get("/posts", post_controller.post_list);
 // Example of how to send this POST request with the cookie generated through cURL:
 // curl -b cookies.txt \
 //      -H 'Content-Type: application/json' \
-//      -d '{ "title":"My new blog post!","text":"This is the text in my new blog post", "published": false}' \
+//      -d '{ "title":"My new blog post!","text":"This is the text in my new blog post", "published": false }' \
 //      -X POST \
 //      http://localhost:3000/posts
 router.post("/posts", post_controller.post_post);
