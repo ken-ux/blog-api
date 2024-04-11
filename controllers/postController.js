@@ -72,8 +72,15 @@ exports.post_get = asyncHandler(async (req, res, next) => {
   res.json(post);
 });
 
-// TO-DO
 exports.post_put = asyncHandler(async (req, res, next) => {
+  const post = Post.findById(req.params.postid).exec();
+  if (post === null) {
+    // No results.
+    const err = new Error("Post not found.");
+    err.status = 404;
+    return next(err);
+  }
+  
   const possibleFields = ["title", "text", "published"];
   let update = {};
 
