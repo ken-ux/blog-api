@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const Comment = require("../models/comment");
 const User = require("../models/user");
 const { check, body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
@@ -71,6 +72,7 @@ exports.post_get = asyncHandler(async (req, res, next) => {
   res.json(post);
 });
 
+// TO-DO
 exports.post_put = (req, res, next) => {
   res.json("NOT IMPLEMENTED: Post PUT");
 };
@@ -83,6 +85,15 @@ exports.post_delete = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
+
+  // Delete comments attached to post.
+  const comments = await Comment.find({ post: req.params.postid }).exec();
+  if (comments.length > 0) {
+    while (comments.length > 0) {
+      await comments[0].deleteOne();
+    }
+  }
+
   await post.deleteOne();
   res.send("Post deleted.");
 });
@@ -96,16 +107,16 @@ exports.post_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.post_post = asyncHandler(async (req, res, next) => {
-  // const author = await User.findById(req.params.id).exec();
+  const user = await User.findById(req.user.id);
 
-  // const post = new Post({
-  //   author: author,
-  //   title: req.params.title,
-  //   text: req.params.text,
-  //   timestamp: req.params.timestamp,
-  //   published: req.params.published,
-  // });
+  const post = new Post({
+    author: user,
+    title: req.body.title,
+    text: req.body.text,
+    timestamp: Date.now(),
+    published: req.body.published,
+  });
 
-  // await post.save();
+  await post.save();
   res.send("New post saved.");
 });

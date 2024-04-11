@@ -6,7 +6,7 @@ const comment_controller = require("../controllers/commentController");
 // POST ROUTES
 
 /* GET login status */
-// Example of how to send along a cookie created through cURL with the get request:
+// Example of how to send along a cookie created through cURL with the GET request:
 // curl -b cookies.txt http://localhost:3000/login
 router.get("/login", post_controller.login_get);
 
@@ -33,6 +33,12 @@ router.delete("/posts/:postid", post_controller.post_delete);
 router.get("/posts", post_controller.post_list);
 
 /* POST a new post */
+// Example of how to send this POST request with the cookie generated through cURL:
+// curl -b cookies.txt \
+//      -H 'Content-Type: application/json' \
+//      -d '{ "title":"My new blog post!","text":"This is the text in my new blog post", "published": false}' \
+//      -X POST \
+//      http://localhost:3000/posts
 router.post("/posts", post_controller.post_post);
 
 // COMMENT ROUTES
