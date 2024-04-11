@@ -59,6 +59,11 @@ router.delete(
 router.get("/posts/:postid/comments", comment_controller.comment_list);
 
 /* POST a new comment to a post */
+// Example of how to send this POST request with cURL:
+// curl -H 'Content-Type: application/json' \
+//      -d '{ "username":"Commenter","text":"I am commenting on this post." }' \
+//      -X POST \
+//      http://localhost:3000/posts/:postid/comments/
 router.post("/posts/:postid/comments", comment_controller.comment_post);
 
 module.exports = router;

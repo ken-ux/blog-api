@@ -1,4 +1,5 @@
 const Comment = require("../models/comment");
+const Post = require("../models/post");
 const asyncHandler = require("express-async-handler");
 
 exports.comment_get = asyncHandler(async (req, res, next) => {
@@ -32,6 +33,22 @@ exports.comment_list = asyncHandler(async (req, res, next) => {
   res.json(comments);
 });
 
-exports.comment_post = (req, res, next) => {
-  res.json("NOT IMPLEMENTED: Comment POST");
-};
+exports.comment_post = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.postid).exec();
+  if (post === null) {
+    // No results.
+    const err = new Error("Post not found.");
+    err.status = 404;
+    return next(err);
+  }
+
+  const comment = new Comment({
+    post: post,
+    username: req.body.username,
+    text: req.body.text,
+    timestamp: Date.now(),
+  });
+
+  await comment.save();
+  res.send("New comment saved.");
+});
