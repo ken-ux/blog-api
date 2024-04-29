@@ -7,17 +7,28 @@ const closeMongoServer =
   require("../config/mongoConfigTesting").closeMongoServer;
 var indexRouter = require("../routes/index");
 const User = require("../models/user");
+const Post = require("../models/post");
 
 beforeAll(async () => {
   initializeMongoServer();
   app.use("/", indexRouter);
 
+  // Add mock data
   const user = new User({
     display_name: "John Doe",
     username: "testuser",
     password: "password123",
   });
   await user.save();
+
+  const post = new Post({
+    author: user,
+    title: "My new blog post!",
+    text: "This is the text in my new blog post",
+    timestamp: Date.now(),
+    published: false,
+  });
+  await post.save();
 });
 
 afterAll(() => {
@@ -36,55 +47,20 @@ describe("Login", () => {
         done();
       });
   });
-
-  // test("Receive success message when user is logged in", (done) => {
-  //   request(app)
-  //     .post("/login")
-  //     .type("form")
-  //     .send({ username: "testuser" })
-  //     .send({ password: "password" })
-  //     .expect("User logged in.")
-  //     .expect(200)
-  //     .end(function (err, res) {
-  //       if (err) return done(err);
-  //       return done();
-  //     });
-  // });
-
-  // test("Get users", async (done) => {
-  //   const users = await User.find();
-  //   console.log(users);
-  //   done();
-  // });
 });
 
 describe("Posts", () => {
-  // test("Create a new post", (done) => {
-  //   request(app)
-  //     .post("/posts")
-  //     .send({
-  //       title: "My new blog post!",
-  //       text: "This is the text in my new blog post",
-  //       published: false,
-  //     })
-  //     .set("Content-Type", "application/json")
-  //     .expect("Content-Type", "text/html; charset=utf-8")
-  //     .expect(200)
-  //     .end(function (err, res) {
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  test("List of posts returned as JSON array", async () => {
+    const response = await request(app).get("/posts");
+    expect(response.headers["content-type"]).toMatch(/json/);
+    expect(response.status).toEqual(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
 
-  test("Get list of posts", (done) => {
-    request(app)
-      .get("/posts")
-      .expect("Content-Type", /json/)
-      .expect([])
-      .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err);
-        done();
-      });
+  test("Post deleted successfully", async () => {
+    const post = await Post.findOne();
+    await request(app).delete(`/posts/${post.id}`).expect("Post deleted.");
+    const deletedPost = await Post.findById(post.id);
+    expect(deletedPost).toEqual(null);
   });
 });
