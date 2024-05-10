@@ -117,7 +117,7 @@ exports.post_delete = asyncHandler(async (req, res, next) => {
 
 exports.post_list = asyncHandler(async (req, res, next) => {
   const posts = await Post.find()
-    .sort({ timestamp: 1 })
+    .sort({ timestamp: -1 })
     .populate("author")
     .exec();
   res.json(posts);
