@@ -60,7 +60,7 @@ exports.login_post = [
         const opts = {};
         opts.expiresIn = 120;
         const secret = process.env.SECRET;
-        const token = jwt.sign({ user: req.user.username }, secret, opts);
+        const token = jwt.sign({ user: req.user.id }, secret, opts);
         return res.status(200).json({
           message: "User logged in.",
           token,
