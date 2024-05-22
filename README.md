@@ -22,3 +22,4 @@ The main purpose of this project was to gain experience building an API and unde
   - Afterwards, I learned how to send that cookie along with any request as proof of authentication.
   - Without this cookie, a session wouldn't persistent when running requests through cURL. This is an issue that I didn't run into from previous projects since I was primarily testing API calls through a web browser, which handles cookie storage and management with less user involvement.
 - Unit testing routes, controllers, and database operations on a mock database with SuperTest + Jest.
+- Creating and sending a JSON Web Token (JWT) on successful authentication.
