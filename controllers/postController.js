@@ -8,9 +8,9 @@ const jwt = require("jsonwebtoken");
 
 exports.login_get = (req, res, next) => {
   if (req.user) {
-    res.send(`You are logged in as ${req.user.display_name}.`);
+    res.status(200).send(`You are logged in as ${req.user.display_name}.`);
   } else {
-    res.send("You are not logged in.");
+    res.status(401).send("You are not logged in.");
   }
 };
 
