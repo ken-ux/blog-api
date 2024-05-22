@@ -4,6 +4,7 @@ const User = require("../models/user");
 const { check, body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 exports.login_get = (req, res, next) => {
   if (req.user) {
@@ -54,8 +55,16 @@ exports.login_post = [
         if (err) {
           return next(err);
         }
-        // Send message if there are no login issues.
-        return res.send("User logged in.");
+
+        // Send token if there are no login issues.
+        const opts = {};
+        opts.expiresIn = 120;
+        const secret = process.env.SECRET;
+        const token = jwt.sign({ user: req.user.username }, secret, opts);
+        return res.status(200).json({
+          message: "User logged in.",
+          token,
+        });
       });
     })(req, res, next);
   },
@@ -80,7 +89,7 @@ exports.post_put = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-  
+
   const possibleFields = ["title", "text", "published"];
   let update = {};
 
