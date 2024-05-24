@@ -70,6 +70,15 @@ exports.login_post = [
   },
 ];
 
+exports.logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+};
+
 exports.post_get = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.postid).exec();
   if (post === null) {

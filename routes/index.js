@@ -20,6 +20,9 @@ router.get("/login", post_controller.login_get);
 //      http://localhost:3000/login
 router.post("/login", post_controller.login_post);
 
+/* GET logout user */
+router.get("/logout", post_controller.logout);
+
 /* GET specific post */
 router.get("/posts/:postid", post_controller.post_get);
 
