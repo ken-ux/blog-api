@@ -10,7 +10,7 @@ router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    return res.send("Success");
+    return res.status(200).json({ message: "You accessed the protected route!" });
   }
 );
 
