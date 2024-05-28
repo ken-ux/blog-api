@@ -2,8 +2,17 @@ var express = require("express");
 var router = express.Router();
 const post_controller = require("../controllers/postController");
 const comment_controller = require("../controllers/commentController");
+const passport = require("passport");
 
 // POST ROUTES
+
+router.get(
+  "/protected",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    return res.send("Success");
+  }
+);
 
 /* GET login status */
 // Example of how to send along a cookie created through cURL with the GET request:
