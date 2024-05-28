@@ -21,7 +21,7 @@ exports.login_post = [
     const usernameExists = await User.findOne({ username: value }).exec();
     if (usernameExists === null) {
       throw new Error(
-        "User does not exist. Please check username and try again."
+        `${value} does not exist. Please check username and try again.`
       );
     }
   }),
@@ -34,7 +34,7 @@ exports.login_post = [
 
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
-      return res.send(errors.array());
+      return res.status(401).send(errors.array());
     }
     // Validation is successful, call next() to go on with passport authentication.
     next();
@@ -50,7 +50,7 @@ exports.login_post = [
       if (!user) {
         return res.send(info.message);
       }
-      // User is authenticated, log them into the session.
+      // User is authenticated, log them in.
       req.login(user, function (err) {
         if (err) {
           return next(err);
@@ -60,11 +60,9 @@ exports.login_post = [
         const opts = {};
         opts.expiresIn = 120;
         const secret = process.env.SECRET;
-        const token = jwt.sign({ user: req.user.id }, secret, opts);
-        return res.status(200).json({
-          message: "User logged in.",
-          token,
-        });
+        const body = { id: req.user.id, username: req.user.username };
+        const token = jwt.sign({ user: body }, secret, opts);
+        return res.status(200).json({ token: "bearer " + token });
       });
     })(req, res, next);
   },
