@@ -73,7 +73,7 @@ exports.logout = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    res.send("User logged out.");
   });
 };
 
