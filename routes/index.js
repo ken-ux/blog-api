@@ -10,11 +10,9 @@ router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    return res
-      .status(200)
-      .json({
-        message: `You accessed the protected route, ${req.user.username}!`,
-      });
+    return res.status(200).json({
+      message: `You accessed the protected route, ${req.user.username}!`,
+    });
   }
 );
 
@@ -49,7 +47,11 @@ router.get("/posts/:postid", post_controller.post_get);
 router.put("/posts/:postid", post_controller.post_put);
 
 /* DELETE specific post */
-router.delete("/posts/:postid", post_controller.post_delete);
+router.delete(
+  "/posts/:postid",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.post_delete
+);
 
 /* GET list of posts */
 router.get("/posts", post_controller.post_list);
