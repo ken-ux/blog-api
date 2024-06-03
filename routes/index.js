@@ -10,7 +10,11 @@ router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    return res.status(200).json({ message: `You accessed the protected route, ${req.user.username}!` });
+    return res
+      .status(200)
+      .json({
+        message: `You accessed the protected route, ${req.user.username}!`,
+      });
   }
 );
 
@@ -57,7 +61,11 @@ router.get("/posts", post_controller.post_list);
 //      -d '{ "title":"My new blog post!","text":"This is the text in my new blog post", "published": false }' \
 //      -X POST \
 //      http://localhost:3000/posts
-router.post("/posts", post_controller.post_post);
+router.post(
+  "/posts",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.post_post
+);
 
 // COMMENT ROUTES
 
