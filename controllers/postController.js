@@ -146,7 +146,7 @@ exports.post_post = asyncHandler(async (req, res, next) => {
     author: user,
     title: req.body.title,
     text: req.body.text,
-    timestamp: Date.now(),
+    timestamp: req.body.timestamp,
     published: req.body.published,
   });
 
