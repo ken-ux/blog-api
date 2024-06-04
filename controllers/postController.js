@@ -58,7 +58,7 @@ exports.login_post = [
 
         // Send token if there are no login issues.
         const opts = {};
-        opts.expiresIn = 120;
+        opts.expiresIn = "12h";
         const secret = process.env.SECRET;
         const body = { id: req.user.id, username: req.user.username };
         const token = jwt.sign({ user: body }, secret, opts);
