@@ -48,7 +48,7 @@ exports.login_post = [
       }
       // If user isn't authenticated, rerender page with error message.
       if (!user) {
-        return res.send(info.message);
+        return res.status(401).json(info.message);
       }
       // User is authenticated, log them in.
       req.login(user, function (err) {
