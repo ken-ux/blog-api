@@ -19,7 +19,11 @@ router.get(
 /* GET login status */
 // Example of how to send along a cookie created through cURL with the GET request:
 // curl -b cookies.txt http://localhost:3000/login
-router.get("/login", post_controller.login_get);
+router.get(
+  "/login",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.login_get
+);
 
 /* POST to login */
 // Example of how to send a POST request to login through the command line:
