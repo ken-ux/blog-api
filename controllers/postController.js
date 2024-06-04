@@ -97,7 +97,7 @@ exports.post_put = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  const possibleFields = ["title", "text", "published"];
+  const possibleFields = ["title", "text", "timestamp", "published"];
   let update = {};
 
   for (let i = 0; i < possibleFields.length; i++) {
